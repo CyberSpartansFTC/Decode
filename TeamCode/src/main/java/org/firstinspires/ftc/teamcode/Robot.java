@@ -17,11 +17,11 @@ import dev.nextftc.hardware.impl.IMUEx;
 public class Robot extends NextFTCOpMode {
     // Initialize hardware and controller bindings
     public static final IMUEx imu = new IMUEx("imu", Direction.UP, Direction.LEFT);
-    private final Button headingReset = button(() -> gamepad1.y);
 
     public Robot() {
         addComponents(
                 new SubsystemComponent(Chassis.INSTANCE),
+                new SubsystemComponent(Intake.INSTANCE),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -29,15 +29,22 @@ public class Robot extends NextFTCOpMode {
 
     @Override
     public void onInit() {
-        headingReset.whenBecomesTrue(imu::zero);
+
     }
 
     @Override
     public void onStartButtonPressed() {
+        Button headingReset = button(() -> gamepad1.y);
+        Button spinIntake = button(() -> gamepad1.a);
+        headingReset.whenBecomesTrue(imu::zero);
+        spinIntake
+            .toggleOnBecomesTrue()
+            .whenBecomesTrue(Intake.INSTANCE.spinIntakeWheel)
+            .whenBecomesFalse(Intake.INSTANCE.stopIntakeWheel);
+
         imu.zero();
         Chassis.INSTANCE.driverControlled.schedule();
     }
-
     @Override
     public void onUpdate() {
         BindingManager.update();
@@ -47,4 +54,5 @@ public class Robot extends NextFTCOpMode {
     public void onStop() {
         BindingManager.reset();
     }
+
 }

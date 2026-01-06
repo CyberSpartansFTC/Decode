@@ -20,8 +20,9 @@ public class Robot extends NextFTCOpMode {
 
     public Robot() {
         addComponents(
-                new SubsystemComponent(Chassis.INSTANCE),
+                // new SubsystemComponent(Chassis.INSTANCE),
                 new SubsystemComponent(Intake.INSTANCE),
+                new PedroPathingTeleOp(),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
@@ -35,12 +36,12 @@ public class Robot extends NextFTCOpMode {
     @Override
     public void onStartButtonPressed() {
         Button headingReset = button(() -> gamepad1.y);
-        Button spinIntake = button(() -> gamepad1.a);
         headingReset.whenBecomesTrue(imu::zero);
+        /* Button spinIntake = button(() -> gamepad1.a);
         spinIntake
             .toggleOnBecomesTrue()
             .whenBecomesTrue(Intake.INSTANCE.spinIntakeWheel)
-            .whenBecomesFalse(Intake.INSTANCE.stopIntakeWheel);
+            .whenBecomesFalse(Intake.INSTANCE.stopIntakeWheel); */
 
         imu.zero();
         Chassis.INSTANCE.driverControlled.schedule();

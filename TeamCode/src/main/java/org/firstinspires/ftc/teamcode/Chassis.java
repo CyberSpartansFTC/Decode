@@ -29,7 +29,6 @@ public class Chassis implements Subsystem {
             backRightMotor,
             Gamepads.gamepad1().leftStickY().negate(),
             Gamepads.gamepad1().leftStickX(),
-            Gamepads.gamepad1().rightStickX(),
-            new FieldCentric(Robot.imu)
+            Gamepads.gamepad1().rightStickX()
     );
 }

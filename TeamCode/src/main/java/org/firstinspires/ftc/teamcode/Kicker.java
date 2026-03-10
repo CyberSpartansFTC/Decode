@@ -9,7 +9,7 @@ public class Kicker implements Subsystem {
 
     public static Kicker INSTANCE = new Kicker();
     private ServoEx kicker = new ServoEx("kicker");
-    Command kick = new SetPosition(kicker, 0);
+    Command kick = new SetPosition(kicker, 0.62);
     Command retract = new SetPosition(kicker, 0.7);
 
 }

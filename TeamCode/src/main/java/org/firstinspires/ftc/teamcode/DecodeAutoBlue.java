@@ -1,35 +1,30 @@
 package org.firstinspires.ftc.teamcode;
 
-import static dev.nextftc.bindings.Bindings.*;
-
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import dev.nextftc.bindings.BindingManager;
-import dev.nextftc.bindings.Button;
-import dev.nextftc.core.commands.conditionals.IfElseCommand;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.NextFTCOpMode;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
-@TeleOp(name="Decode TeleOp")
-public class DecodeTeleOp extends NextFTCOpMode {
+@Autonomous(name="Decode Auto Blue")
+public class DecodeAutoBlue extends NextFTCOpMode {
     public SequentialGroup kickback;
     public ParallelGroup intake;
     public ParallelGroup travel;
-    public SequentialGroup kickSequence;
-    public DecodeTeleOp() {
+    public static SequentialGroup kickSequence;
+    public DecodeAutoBlue() {
         addComponents(
                 // new SubsystemComponent(Chassis.INSTANCE),
                 new SubsystemComponent(Intake.INSTANCE),
                 new SubsystemComponent(Launcher.INSTANCE),
                 new SubsystemComponent(Gate.INSTANCE),
                 new SubsystemComponent(Kicker.INSTANCE),
-                PedroPathingTeleOp.INSTANCE,
+                PedroPathingAutoBlue.INSTANCE,
                 // Limelight.INSTANCE,
                 TelemetryEx.INSTANCE,
                 BulkReadComponent.INSTANCE,
@@ -74,48 +69,7 @@ public class DecodeTeleOp extends NextFTCOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        Button autoAlign = button(() -> gamepad1.a);
-        Button cancelAlign = button(() -> gamepad1.b);
-        Button spinIntake = button(() -> gamepad2.x);
-        Button reverseIntake = button(() -> gamepad2.y);
-        Button spinLauncher = button(() -> gamepad2.dpad_up);
-        Button kick = button(() -> gamepad2.a);
-        Button quickLaunch = button(() -> gamepad2.dpad_down);
-        Button gateToggle = button(() -> gamepad2.b);
-        Button resetHeading = button(() -> gamepad1.x);
-
-        gateToggle
-                .toggleOnBecomesTrue()
-                .whenBecomesTrue(Gate.INSTANCE.close)
-                .whenBecomesFalse(Gate.INSTANCE.open);
-
-        quickLaunch
-                .whenBecomesTrue(kickback);
-
-        spinIntake
-                .toggleOnBecomesTrue()
-                .whenBecomesTrue(intake)
-                .whenBecomesFalse(travel);
-
-        reverseIntake
-                .toggleOnBecomesTrue()
-                .whenBecomesTrue(Intake.INSTANCE.reverseIntakeWheel)
-                .whenBecomesFalse(Intake.INSTANCE.stopIntakeWheel);
-
-        spinLauncher
-                .toggleOnBecomesTrue()
-                .whenBecomesTrue(Launcher.INSTANCE.spinLaunchWheels)
-                .whenBecomesFalse(Launcher.INSTANCE.stopLaunchWheels);
-
-        kick
-                .whenBecomesTrue(kickSequence);
-
-        resetHeading
-                .whenBecomesTrue(PedroPathingTeleOp.INSTANCE::resetHeading);
-
-        autoAlign.whenBecomesTrue(PedroPathingTeleOp.INSTANCE.autoPosition);
-        cancelAlign.whenBecomesTrue(PedroPathingTeleOp.INSTANCE.teleOpDrive);
-
+        PedroPathingAutoBlue.INSTANCE.setPathState(PedroPathingAutoBlue.PathState.START);
     }
     @Override
     public void onUpdate() {

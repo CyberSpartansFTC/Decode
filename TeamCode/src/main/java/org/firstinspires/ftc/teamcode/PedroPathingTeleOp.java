@@ -6,6 +6,8 @@ import com.pedropathing.control.KalmanFilter;
 import com.pedropathing.control.KalmanFilterParameters;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.BezierLine;
+import com.pedropathing.geometry.CoordinateSystem;
+import com.pedropathing.geometry.PedroCoordinates;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.HeadingInterpolator;
 import com.pedropathing.paths.Path;
@@ -39,15 +41,17 @@ public class PedroPathingTeleOp implements Component {
             follower = Constants.createFollower(ActiveOpMode.hardwareMap());
         }
 
-        startingPose = startingPose == null ? new Pose() : startingPose;
+        // startingPose = startingPose == null ? new Pose(26.295652173913048 - 72,128.97391304347826 - 72,Math.toRadians(-36), PedroCoordinates.INSTANCE) : startingPose;
+        // startingPose = new Pose(72 - 26.295652173913048, 128.97391304347826 - 72, Math.toRadians(216));
+        startingPose = new Pose(36.000, 9.000, Math.toRadians(90));
         follower.setStartingPose(startingPose);
         follower.update();
 
         Limelight.INSTANCE.setLimelightPose(startingPose);
 
         pathChain = () -> follower.pathBuilder() //Lazy Curve Generation
-                .addPath(new Path(new BezierLine(follower::getPose, new Pose(0, 0))))
-                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(-45), 0.8))
+                .addPath(new Path(new BezierLine(follower::getPose, new Pose(72 - 45, 113 - 72))))
+                .setHeadingInterpolation(HeadingInterpolator.linearFromPoint(follower::getHeading, Math.toRadians(-55), 0.8))
                 .build();
     }
 
@@ -75,7 +79,7 @@ public class PedroPathingTeleOp implements Component {
                     -ActiveOpMode.gamepad1().left_stick_y,
                     -ActiveOpMode.gamepad1().left_stick_x,
                     -ActiveOpMode.gamepad1().right_stick_x,
-                    true // Robot Centric
+                    false // Robot Centric
             );
 
                 //This is how it looks with slowMode on
@@ -83,7 +87,7 @@ public class PedroPathingTeleOp implements Component {
                     -ActiveOpMode.gamepad1().left_stick_y * slowModeMultiplier,
                     -ActiveOpMode.gamepad1().left_stick_x * slowModeMultiplier,
                     -ActiveOpMode.gamepad1().right_stick_x * slowModeMultiplier,
-                    true // Robot Centric
+                    false // Robot Centric
             );
         }
 
@@ -152,5 +156,9 @@ public class PedroPathingTeleOp implements Component {
             follower.setPose(limelightPose);
         }*/
 
+    }
+
+    public void resetHeading() {
+        follower.setPose(follower.getPose().withHeading(0));
     }
 }
